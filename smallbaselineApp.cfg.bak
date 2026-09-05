@@ -1,0 +1,42 @@
+########## 1. 資料載入 (Data Loading) ##########
+mintpy.load.processor        = nisar
+mintpy.load.unwFile          = ./data_gunw/*.h5
+mintpy.load.coherenceFile    = ./data_gunw/*.h5
+mintpy.load.conncompFile     = ./data_gunw/*.h5
+
+# DEM
+mintpy.load.demFile          = ./dem_mailiao.tif
+
+# 地理範圍裁切 (Lat: 23.75~23.82, Lon: 120.15~120.22)
+mintpy.subset.lalo           = 23.75:23.82, 120.15:120.22
+
+########## 2. 干涉對網路篩選 (Network Setup) ##########
+# 過濾平均相干性低於 0.4 的干涉對
+mintpy.network.coherenceBased = yes
+mintpy.network.minCoherence   = 0.4
+
+########## 3. 參考點設定 (Reference Point) ##########
+# 設定六輕陸域穩固結構或 GNSS 站座標作為形變基準 (緯度, 經度)
+mintpy.reference.lalo         = 23.7988, 120.2174
+mintpy.reference.minCoherence = 0.6
+
+########## 4. 相位修補與大氣校正 (Correction) ##########
+# 對流層延遲校正：選用 ERA5 氣象模型 (需安裝 PyAPS)
+mintpy.tropospheric.weatherModel = ERA5
+mintpy.tropospheric.myaps         = pyaps
+
+# 去除相位傾斜 (Phase Ramp/Deramp)
+mintpy.deramp                = linear
+
+# 扣除高程殘差 (Topographic Residual Correction)
+mintpy.topographicResidual  = yes
+
+########## 5. 時間序列反算 (Inversion) ##########
+# 最小乘法 / weighted least squares 反算
+mintpy.inversion.method      = wls
+mintpy.inversion.minNormVelocity = yes
+
+########## 6. 品質過濾 (Masking) ##########
+# 時間相干性閾值過濾，低於 0.6 的像素點將在最終速率圖中被遮罩
+mintpy.mask.minVar           = auto
+mintpy.network.tempCohThresh = 0.6
