@@ -7,9 +7,9 @@ from pyproj import Transformer
 transformer = Transformer.from_crs("EPSG:32651", "EPSG:4326", always_xy=True)
 mailiao_bounds = [
     120.15,
-    120.24,
+    120.23,
     23.75,
-    23.83,
+    23.822,
 ]  # [lon_min, lon_max, lat_min, lat_max]
 
 
