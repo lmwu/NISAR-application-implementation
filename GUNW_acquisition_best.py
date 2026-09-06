@@ -49,6 +49,6 @@ print(f"\n最佳組合選定：{best_key}（共 {max_count} 幅）")
 target_items = asf.ASFSearchResults(grouped_results[best_key])
 
 print(f"\n開始精準下載 {best_key} 的 {len(target_items)} 個檔案...")
-session = asf.ASFSession().login()  # 輸入 ASF 帳號密碼
-target_items.download(path=outputA_dir, session=session)  # 或 outputD_dir
+#session = asf.ASFSession().login()  # 輸入 ASF 帳號密碼
+target_items.download(path=outputA_dir, processes=4)  # 或 outputD_dir
 print("下載完成！此資料夾可 100% 直攻 MintPy prep_nisar.py。")
