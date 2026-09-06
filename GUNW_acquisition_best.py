@@ -1,11 +1,10 @@
 import os
 from collections import defaultdict
 import asf_search as asf
-from shapely.geometry import shape
 
-outputA_dir = './data_gunw/ASC_Clean'
+outputA_dir = './data_gunw/ASC'
 os.makedirs(outputA_dir, exist_ok=True)
-outputD_dir = './data_gunw/DESC_Clean'
+outputD_dir = './data_gunw/DESC'
 os.makedirs(outputD_dir, exist_ok=True)
 
 # 1. 定義六輕 AOI 範圍 (Shapely Polygon)
@@ -22,33 +21,39 @@ results = asf.geo_search(
     intersectsWith=mailiao_wkt,
 )
 
-# 3. 按 (Relative Orbit, Frame Number) 進行分組統計
+# 3. 從檔名解析 Track (parts[4]) 與 Frame (parts[5])
 grouped_results = defaultdict(list)
 for item in results:
-    track = item.properties.get("relativeOrbit")
-    # 從檔名或 properties 獲取 Frame
-    frame = item.properties.get("frameNumber", "Unknown")
+    scene_name = item.properties.get("sceneName", "")
+    parts = scene_name.split("_")
+
+    # 範例: NISAR_L2_PR_GUNW_024_039_A_...
+    if len(parts) >= 6:
+        track = parts[4]
+        frame = parts[5]
+    else:
+        track = "Unknown"
+        frame = "Unknown"
+
     key = f"Track_{track}_Frame_{frame}"
     grouped_results[key].append(item)
 
-# 4. 列出統計結果並找出「最佳黃金組合」
+# 4. 印出真正的 Track/Frame 統計與下載
 print("\n=== 各軌道與框架的可下數量統計 ===")
-best_key = None
-max_count = 0
-
 for key, items in grouped_results.items():
-    count = len(items)
-    print(f"[{key}] : 共 {count} 幅影像")
-    if count > max_count:
-        max_count = count
-        best_key = key
+    print(f"[{key}] : 共 {len(items)} 幅影像")
 
-print(f"\n最佳組合選定：{best_key}（共 {max_count} 幅）")
-
-# 5. 只針對「最佳黃金組合」執行精準下載
+best_key = max(grouped_results, key=lambda k: len(grouped_results[k]))
 target_items = asf.ASFSearchResults(grouped_results[best_key])
+print(f"\n最佳組合選定：{best_key}（共 {len(target_items)} 幅影像）")
+
+# 4. 執行驗證與下載
+#username = "YOUR_EARTHDATA_USERNAME"
+#password = "YOUR_EARTHDATA_PASSWORD"
+
+#session = asf.ASFSession().auth_with_creds(username, password)
 
 print(f"\n開始精準下載 {best_key} 的 {len(target_items)} 個檔案...")
-#session = asf.ASFSession().login()  # 輸入 ASF 帳號密碼
-target_items.download(path=outputA_dir, processes=4)  # 或 outputD_dir
-print("下載完成！此資料夾可 100% 直攻 MintPy prep_nisar.py。")
+
+target_items.download(path=outputA_dir)  # 或 outputD_dir
+print("下載完成！")
