@@ -1,6 +1,12 @@
+import os
 from collections import defaultdict
 import asf_search as asf
 from shapely.geometry import shape
+
+outputA_dir = './data_gunw/ASC_Clean'
+os.makedirs(outputA_dir, exist_ok=True)
+outputD_dir = './data_gunw/DESC_Clean'
+os.makedirs(outputD_dir, exist_ok=True)
 
 # 1. 定義六輕 AOI 範圍 (Shapely Polygon)
 mailiao_wkt = (
@@ -44,5 +50,5 @@ target_items = asf.GranuleRList(grouped_results[best_key])
 
 print(f"\n開始精準下載 {best_key} 的 {len(target_items)} 個檔案...")
 session = asf.ASFSession().login()  # 輸入 ASF 帳號密碼
-target_items.download(path="./data_gunw/ASC_Clean", session=session)
+target_items.download(path=outputA_dir, session=session)  # 或 outputD_dir
 print("下載完成！此資料夾可 100% 直攻 MintPy prep_nisar.py。")
