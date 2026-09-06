@@ -68,8 +68,8 @@ transformer_to_geo = Transformer.from_crs(
 )
 
 # 將六輕 WGS84 經緯度轉為 UTM 公尺坐標進行精準裁切
-lon_min, lon_max = 120.15, 120.24
-lat_min, lat_max = 23.75, 23.83
+lon_min, lon_max = 120.15, 120.23
+lat_min, lat_max = 23.75, 23.822
 
 utm_x1, utm_y1 = transformer_to_utm.transform(lon_min, lat_min)
 utm_x2, utm_y2 = transformer_to_utm.transform(lon_max, lat_max)
