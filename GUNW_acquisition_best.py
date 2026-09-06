@@ -46,7 +46,7 @@ for key, items in grouped_results.items():
 print(f"\n最佳組合選定：{best_key}（共 {max_count} 幅）")
 
 # 5. 只針對「最佳黃金組合」執行精準下載
-target_items = asf.GranuleRList(grouped_results[best_key])
+target_items = asf.ASFSearchResults(grouped_results[best_key])
 
 print(f"\n開始精準下載 {best_key} 的 {len(target_items)} 個檔案...")
 session = asf.ASFSession().login()  # 輸入 ASF 帳號密碼
