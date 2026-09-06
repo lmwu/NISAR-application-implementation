@@ -51,7 +51,7 @@ def main():
 
     print(f"\n開始精準下載 {best_key} 的 {len(target_items)} 個檔案...")
 
-    target_items.download(path=outputA_dir)  # 或 outputD_dir
+    target_items.download(path=outputA_dir, processes=4)  # 或 outputD_dir
     print("下載完成！")
 
 if __name__ == '__main__':
